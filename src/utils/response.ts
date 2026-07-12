@@ -22,11 +22,5 @@ export function fail(
   );
 }
 
-/** SSE data フィールドを生成する薄いユーティリティ。 */
-export function sseFormat(event: string, data: unknown): string {
-  const payload = typeof data === 'string' ? data : JSON.stringify(data);
-  return `event: ${event}\ndata: ${payload}\n\n`;
-}
-
 // re-export type
 export type { StatusCode };

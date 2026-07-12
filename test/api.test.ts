@@ -127,6 +127,42 @@ describe('POST /api/reservations', () => {
     expect(body.data.reservation.seatId).toBe('A-1');
   });
 
+  it('accepts a native HTML form submission', async () => {
+    const form = new URLSearchParams({
+      participantId: 'team-form',
+      seatId: 'A-2',
+      source: 'webmcp',
+    });
+    const res = await runFetch(
+      apiRequest('/api/reservations', {
+        method: 'POST',
+        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        body: form.toString(),
+      }),
+    );
+    expect(res.status).toBe(201);
+    const body = await jsonOf(res);
+    expect(body.data.reservation).toMatchObject({
+      participantId: 'team-form',
+      seatId: 'A-2',
+      source: 'webmcp',
+    });
+  });
+
+  it('rejects a form submission with an invalid participant id', async () => {
+    const form = new URLSearchParams({ participantId: 'invalid id', seatId: 'A-2' });
+    const res = await runFetch(
+      apiRequest('/api/reservations', {
+        method: 'POST',
+        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        body: form.toString(),
+      }),
+    );
+    expect(res.status).toBe(400);
+    const body = await jsonOf(res);
+    expect(body.error.code).toBe('INVALID_PARTICIPANT_ID');
+  });
+
   it('rejects when the seat is already reserved', async () => {
     await runFetch(
       apiRequest('/api/reservations', {

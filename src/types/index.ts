@@ -1,4 +1,4 @@
-import type { D1Database, DurableObjectNamespace } from '@cloudflare/workers-types';
+import type { D1Database } from '@cloudflare/workers-types';
 
 export type SeatStatus = 'available' | 'reserved' | 'disabled';
 
@@ -33,18 +33,8 @@ export interface SeatRow {
   updated_at: string;
 }
 
-export interface ReservationEventRow {
-  id: number;
-  event_type: string;
-  seat_id: string;
-  participant_id: string | null;
-  source: string | null;
-  created_at: string;
-}
-
 export interface AppBindings {
   DB: D1Database;
-  EVENT_HUB: DurableObjectNamespace;
 
   EVENT_NAME: string;
   ROW_LABELS: string;
@@ -64,37 +54,3 @@ export type HonoEnv = {
   Bindings: AppBindings;
   Variables: AppVariables;
 };
-
-/** SSE で流すイベントの共通型。 */
-export type BroadcastEvent =
-  | {
-      type: 'seat.updated';
-      data: {
-        seatId: string;
-        status: SeatStatus;
-        reservedBy?: string | null;
-        source: ReservationSource | null;
-        updatedAt: string;
-      };
-    }
-  | {
-      type: 'reservation.created';
-      data: {
-        seatId: string;
-        participantId?: string;
-        source: ReservationSource;
-        reservedAt: string;
-      };
-    }
-  | {
-      type: 'reservation.deleted';
-      data: {
-        seatId: string;
-        participantId?: string;
-        source: ReservationSource;
-      };
-    }
-  | {
-      type: 'seats.reset';
-      data: { resetAt: string };
-    };

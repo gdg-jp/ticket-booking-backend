@@ -14,7 +14,6 @@ import {
   resetAllSeats,
   setSeatStatus,
 } from '../services/reservations';
-import { broadcast } from '../services/events';
 
 export const adminRoutes = new Hono<HonoEnv>();
 
@@ -37,7 +36,6 @@ adminRoutes.post('/initialize', async (c) => {
 
 /** POST /api/admin/reset: 全席リセット */
 adminRoutes.post('/reset', async (c) => {
-  const config = loadConfig(c.env);
   let body: unknown;
   try {
     body = await c.req.json();
@@ -59,12 +57,6 @@ adminRoutes.post('/reset', async (c) => {
 
   await resetAllSeats(c.env);
   const resetAt = new Date().toISOString();
-  c.executionCtx.waitUntil(
-    broadcast(c.env, config, {
-      type: 'seats.reset',
-      data: { resetAt },
-    }),
-  );
   return ok(c, { resetAt });
 });
 
@@ -79,27 +71,6 @@ adminRoutes.delete('/seats/:seatId/reservation', async (c) => {
   if (!result.ok) {
     return fail(c, result.code, result.message, 404);
   }
-  c.executionCtx.waitUntil(
-    Promise.all([
-      broadcast(c.env, config, {
-        type: 'seat.updated',
-        data: {
-          seatId: result.seat.id,
-          status: 'available',
-          reservedBy: null,
-          source: 'admin',
-          updatedAt: result.seat.updatedAt,
-        },
-      }),
-      broadcast(c.env, config, {
-        type: 'reservation.deleted',
-        data: {
-          seatId: result.seat.id,
-          source: 'admin',
-        },
-      }),
-    ]),
-  );
   return ok(c, { seat: seatForPublic(result.seat, config.exposeParticipantId) });
 });
 
@@ -136,17 +107,5 @@ adminRoutes.patch('/seats/:seatId', async (c) => {
   if (!result.ok) {
     return fail(c, result.code, result.message, 400);
   }
-  c.executionCtx.waitUntil(
-    broadcast(c.env, config, {
-      type: 'seat.updated',
-      data: {
-        seatId: result.seat.id,
-        status: result.seat.status,
-        reservedBy: null,
-        source: 'admin',
-        updatedAt: result.seat.updatedAt,
-      },
-    }),
-  );
   return ok(c, { seat: seatForPublic(result.seat, config.exposeParticipantId) });
 });

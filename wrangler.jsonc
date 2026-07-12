@@ -28,23 +28,6 @@
     }
   ],
 
-  // Durable Object (SSE ブロードキャスト用)
-  "durable_objects": {
-    "bindings": [
-      {
-        "name": "EVENT_HUB",
-        "class_name": "EventHub"
-      }
-    ]
-  },
-
-  "migrations": [
-    {
-      "tag": "v1",
-      "new_sqlite_classes": ["EventHub"]
-    }
-  ],
-
   "observability": {
     "enabled": true
   }
