@@ -1,0 +1,51 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "seat-reservation-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-07-11",
+  "compatibility_flags": [],
+
+  // 環境変数 (公開しても問題ないもの)
+  "vars": {
+    "EVENT_NAME": "WebMCP × Antigravity Hands-on",
+    "ROW_LABELS": "A,B,C,D,E,F,G,H,I,J",
+    "SEATS_PER_ROW": "10",
+    "ALLOW_MULTIPLE_SEATS": "false",
+    "EXPOSE_PARTICIPANT_ID": "false",
+    "ALLOWED_ORIGINS": "http://localhost:8000,http://localhost:8001,http://127.0.0.1:8000,http://127.0.0.1:8001",
+    "ALLOW_NULL_ORIGIN": "true",
+    // 開発用のダミー ADMIN_TOKEN。本番では `wrangler secret put ADMIN_TOKEN` で上書きする。
+    "ADMIN_TOKEN": "dev-admin-token"
+  },
+
+  // D1 データベース
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "seat-reservation",
+      "database_id": "REPLACE_WITH_D1_ID",
+      "migrations_dir": "migrations"
+    }
+  ],
+
+  // Durable Object (SSE ブロードキャスト用)
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "EVENT_HUB",
+        "class_name": "EventHub"
+      }
+    ]
+  },
+
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["EventHub"]
+    }
+  ],
+
+  "observability": {
+    "enabled": true
+  }
+}
