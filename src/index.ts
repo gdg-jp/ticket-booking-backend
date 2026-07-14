@@ -7,6 +7,7 @@ import { healthRoutes } from './routes/health';
 import { seatRoutes } from './routes/seats';
 import { reservationRoutes } from './routes/reservations';
 import { adminRoutes } from './routes/admin';
+import { eventRoutes } from './routes/events';
 
 const app = new Hono<HonoEnv>();
 
@@ -40,6 +41,7 @@ const api = new Hono<HonoEnv>()
   .route('/health', healthRoutes)
   .route('/seats', seatRoutes)
   .route('/reservations', reservationRoutes)
+  .route('/events', eventRoutes)
   .route('/admin', adminRoutes);
 
 app.route('/api', api);

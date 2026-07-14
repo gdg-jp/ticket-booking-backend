@@ -112,6 +112,21 @@ describe('GET /api/seats', () => {
   });
 });
 
+describe('GET /api/events', () => {
+  it('opens an SSE stream and sends connection.ready', async () => {
+    const res = await runFetch(apiRequest('/api/events'));
+    expect(res.status).toBe(200);
+    expect(res.headers.get('content-type')).toContain('text/event-stream');
+
+    const reader = res.body?.getReader();
+    expect(reader).toBeDefined();
+    const chunk = await reader!.read();
+    await reader!.cancel();
+    const text = new TextDecoder().decode(chunk.value);
+    expect(text).toContain('event: connection.ready');
+  });
+});
+
 describe('POST /api/reservations', () => {
   it('reserves an available seat', async () => {
     const res = await runFetch(
