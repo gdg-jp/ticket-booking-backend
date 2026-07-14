@@ -12,7 +12,7 @@
     "SEATS_PER_ROW": "10",
     "ALLOW_MULTIPLE_SEATS": "false",
     "EXPOSE_PARTICIPANT_ID": "false",
-    "ALLOWED_ORIGINS": "http://localhost:8000,http://localhost:8001,http://127.0.0.1:8000,http://127.0.0.1:8001",
+    "ALLOWED_ORIGINS": "http://localhost:8000,http://localhost:8001,http://localhost:8002,http://127.0.0.1:8000,http://127.0.0.1:8001,http://127.0.0.1:8002",
     "ALLOW_NULL_ORIGIN": "true",
     // 開発用のダミー ADMIN_TOKEN。本番では `wrangler secret put ADMIN_TOKEN` で上書きする。
     "ADMIN_TOKEN": "dev-admin-token"
