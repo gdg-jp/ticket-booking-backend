@@ -22,8 +22,8 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "seat-reservation",
-      "database_id": "REPLACE_WITH_D1_ID",
+      "database_name": "webmcp",
+      "database_id": "737e60d8-006a-4231-b00e-81ba67f5a8e1",
       "migrations_dir": "migrations"
     }
   ],
