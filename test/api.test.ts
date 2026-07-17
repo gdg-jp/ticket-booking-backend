@@ -91,6 +91,26 @@ describe('health', () => {
     expect(body.success).toBe(true);
     expect(body.data.status).toBe('ok');
   });
+
+  it('allows the sample app served on localhost:8080', async () => {
+    const res = await runFetch(
+      apiRequest('/api/health', {
+        headers: { Origin: 'http://localhost:8080' },
+      }),
+    );
+    expect(res.headers.get('access-control-allow-origin')).toBe(
+      'http://localhost:8080',
+    );
+  });
+
+  it('does not allow an unconfigured origin', async () => {
+    const res = await runFetch(
+      apiRequest('/api/health', {
+        headers: { Origin: 'https://example.com' },
+      }),
+    );
+    expect(res.headers.has('access-control-allow-origin')).toBe(false);
+  });
 });
 
 describe('GET /api/seats', () => {
