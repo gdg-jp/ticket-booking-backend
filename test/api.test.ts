@@ -254,6 +254,48 @@ describe('POST /api/reservations', () => {
     expect(body.error.code).toBe('ALREADY_HAS_RESERVATION');
   });
 
+  it('treats participant id casing as the same participant', async () => {
+    await runFetch(
+      apiRequest('/api/reservations', {
+        method: 'POST',
+        participantId: 'CaseUser',
+        body: JSON.stringify({ seatId: 'A-1', source: 'web' }),
+      }),
+    );
+    const res = await runFetch(
+      apiRequest('/api/reservations', {
+        method: 'POST',
+        participantId: 'caseuser',
+        body: JSON.stringify({ seatId: 'A-2', source: 'web' }),
+      }),
+    );
+    expect(res.status).toBe(409);
+    const body = await jsonOf(res);
+    expect(body.error.code).toBe('ALREADY_HAS_RESERVATION');
+  });
+
+  it('allows only one reservation when participant id casing races', async () => {
+    const results = await Promise.all([
+      runFetch(
+        apiRequest('/api/reservations', {
+          method: 'POST',
+          participantId: 'RaceUser',
+          body: JSON.stringify({ seatId: 'A-1', source: 'web' }),
+        }),
+      ),
+      runFetch(
+        apiRequest('/api/reservations', {
+          method: 'POST',
+          participantId: 'raceuser',
+          body: JSON.stringify({ seatId: 'A-2', source: 'web' }),
+        }),
+      ),
+    ]);
+
+    expect(results.filter((res) => res.status === 201)).toHaveLength(1);
+    expect(results.filter((res) => res.status === 409)).toHaveLength(1);
+  });
+
   it('rejects missing participant id', async () => {
     const res = await runFetch(
       apiRequest('/api/reservations', {
@@ -339,6 +381,33 @@ describe('DELETE /api/reservations/me', () => {
     expect(res.status).toBe(404);
     const body = await jsonOf(res);
     expect(body.error.code).toBe('RESERVATION_NOT_FOUND');
+  });
+
+  it('finds and cancels a reservation regardless of participant id casing', async () => {
+    await runFetch(
+      apiRequest('/api/reservations', {
+        method: 'POST',
+        participantId: 'CaseUser',
+        body: JSON.stringify({ seatId: 'A-1', source: 'web' }),
+      }),
+    );
+
+    const getRes = await runFetch(
+      apiRequest('/api/reservations/me', {
+        participantId: 'CASEUSER',
+      }),
+    );
+    expect(getRes.status).toBe(200);
+    const getBody = await jsonOf(getRes);
+    expect(getBody.data.reservation.seatId).toBe('A-1');
+
+    const deleteRes = await runFetch(
+      apiRequest('/api/reservations/me', {
+        method: 'DELETE',
+        participantId: 'caseuser',
+      }),
+    );
+    expect(deleteRes.status).toBe(200);
   });
 });
 

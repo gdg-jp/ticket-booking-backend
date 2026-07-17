@@ -46,7 +46,7 @@ export async function findReservationByParticipant(
 ): Promise<Seat | null> {
   const row = await env.DB.prepare(
     `SELECT id, row_label, seat_number, status, reserved_by, reserved_at, reservation_source, updated_at
-     FROM seats WHERE reserved_by = ?`,
+     FROM seats WHERE reserved_by = ? COLLATE NOCASE`,
   )
     .bind(participantId)
     .first<SeatRow>();

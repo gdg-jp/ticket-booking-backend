@@ -55,7 +55,9 @@ export async function reserveSeat(
                 updated_at=?2
           WHERE id=?4
             AND status='available'
-            AND NOT EXISTS (SELECT 1 FROM seats WHERE reserved_by=?1)`,
+            AND NOT EXISTS (
+              SELECT 1 FROM seats WHERE reserved_by=?1 COLLATE NOCASE
+            )`,
       )
         .bind(participantId, now, source, seatId)
         .run();
@@ -153,7 +155,7 @@ export async function cancelOwnReservation(
             reserved_at=NULL,
             reservation_source=NULL,
             updated_at=?1
-      WHERE reserved_by=?2`,
+      WHERE reserved_by=?2 COLLATE NOCASE`,
   )
     .bind(now, participantId)
     .run();

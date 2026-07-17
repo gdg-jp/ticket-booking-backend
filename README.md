@@ -21,6 +21,7 @@ bun run test
 ## 予約 API
 
 JavaScript から呼ぶ場合は、参加者 ID を `X-Participant-ID` ヘッダーで渡します。
+参加者 ID の英字は大文字小文字を区別せず、`CaseUser`と`caseuser`は同じ参加者として扱います。
 
 ```bash
 curl -X POST http://localhost:8787/api/reservations \
