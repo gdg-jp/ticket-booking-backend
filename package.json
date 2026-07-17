@@ -1,6 +1,7 @@
 {
   "name": "seat-reservation-api",
   "type": "module",
+  "packageManager": "pnpm@10.12.4",
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy --minify",

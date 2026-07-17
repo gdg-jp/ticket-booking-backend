@@ -6,16 +6,16 @@ WebMCP ハンズオンの席予約画面で使う Cloudflare Workers + Hono + D1
 ## 開発
 
 ```bash
-bun install
-bun run d1:apply:local
-bun run dev
+pnpm install --frozen-lockfile
+pnpm run d1:apply:local
+pnpm run dev
 ```
 
 API は `http://localhost:8787` で起動します。
 
 ```bash
-bun run typecheck
-bun run test
+pnpm run typecheck
+pnpm run test
 ```
 
 ## 予約 API
