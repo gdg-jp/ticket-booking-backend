@@ -2,8 +2,18 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "seat-reservation-api",
   "main": "src/index.ts",
-  "compatibility_date": "2026-07-11",
-  "compatibility_flags": [],
+  "compatibility_date": "2026-07-15",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": false,
+  "routes": [
+    {
+      "pattern": "api.webmcp.gdgs.jp",
+      "custom_domain": true
+    }
+  ],
+  "secrets": {
+    "required": ["ADMIN_TOKEN"]
+  },
 
   // 環境変数 (公開しても問題ないもの)
   "vars": {
@@ -13,9 +23,7 @@
     "ALLOW_MULTIPLE_SEATS": "false",
     "EXPOSE_PARTICIPANT_ID": "false",
     "ALLOWED_ORIGINS": "http://localhost:8000,http://localhost:8001,http://localhost:8002,http://127.0.0.1:8000,http://127.0.0.1:8001,http://127.0.0.1:8002",
-    "ALLOW_NULL_ORIGIN": "true",
-    // 開発用のダミー ADMIN_TOKEN。本番では `wrangler secret put ADMIN_TOKEN` で上書きする。
-    "ADMIN_TOKEN": "dev-admin-token"
+    "ALLOW_NULL_ORIGIN": "true"
   },
 
   // D1 データベース
@@ -23,12 +31,13 @@
     {
       "binding": "DB",
       "database_name": "webmcp",
-      "database_id": "737e60d8-006a-4231-b00e-81ba67f5a8e1",
+      "database_id": "e046d3f5-94f2-43d5-8eb6-92ad06f3a45a",
       "migrations_dir": "migrations"
     }
   ],
 
   "observability": {
-    "enabled": true
+    "enabled": true,
+    "head_sampling_rate": 1
   }
 }

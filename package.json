@@ -8,8 +8,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "cf-typegen": "wrangler types --env-interface CloudflareBindings",
-    "d1:apply:local": "wrangler d1 migrations apply seat-reservation --local",
-    "d1:apply:remote": "wrangler d1 migrations apply seat-reservation --remote"
+    "d1:apply:local": "wrangler d1 migrations apply webmcp --local",
+    "d1:apply:remote": "wrangler d1 migrations apply webmcp --remote"
   },
   "dependencies": {
     "hono": "^4.12.28"

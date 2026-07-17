@@ -8,6 +8,9 @@ export default defineConfig({
       miniflare: {
         // テスト用の一時 D1 データベース
         d1Databases: ['DB'],
+        bindings: {
+          ADMIN_TOKEN: 'test-admin-token',
+        },
       },
     }),
   ],
